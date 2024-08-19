@@ -1,1 +1,166 @@
+import requests
+from datetime import datetime, timedelta
+
+# Dummy database for simplicity
+user_db = {
+    "farmer1": {"password": "pass123", "crops": [], "soil": [], "diseases": [], "weather": {}, "resources": {}, "market_prices": {}, "financial": {}}
+}
+
+# Function to simulate user login
+def login():
+    user_id = input("Enter User ID: ")
+    if user_id in user_db:
+        password = input("Enter Password: ")
+        if user_db[user_id]["password"] == password:
+            print("Login successful!")
+            return user_id
+        else:
+            print("Incorrect password.")
+            return None
+    else:
+        print("User ID not found.")
+        return None
+
+# Function to register new user
+def register():
+    user_id = input("Enter new User ID: ")
+    if user_id not in user_db:
+        password = input("Enter Password: ")
+        user_db[user_id] = {"password": password, "crops": [], "soil": [], "diseases": [], "weather": {}, "resources": {}, "market_prices": {}, "financial": {}}
+        print("Registration successful!")
+        return user_id
+    else:
+        print("User ID already exists.")
+        return None
+
+# Simulated API calls
+
+def get_crops_recommendation(soil_ph, moisture_level, temp, rainfall):
+    # Simulate API call to get crop recommendations
+    return {"crops": ["Wheat", "Corn", "Soybean"]}
+
+def get_disease_identification(image_path):
+    # Simulate API call to identify disease from crop image
+    return {"disease": "Fungal Infection", "treatment": "Apply fungicide"}
+
+def get_weather_forecast(location):
+    # Simulate API call to get weather forecast
+    return {"forecast": "Sunny with occasional rain", "moisture": "High"}
+
+def get_market_prices():
+    # Simulate API call to get market prices
+    return {"prices": {"Market A": 100, "Market B": 90}}
+
+def get_financial_support():
+    # Simulate API call for financial support options
+    return {"support": "Budget Planning, Expense Tracking, Loan Suggestions"}
+
+# Crop Selection Assistance
+def crop_selection(user_id):
+    soil_ph = input("Enter soil pH level: ")
+    moisture_level = input("Enter soil moisture level: ")
+    temp = input("Enter average temperature: ")
+    rainfall = input("Enter average rainfall: ")
+    
+    response = get_crops_recommendation(soil_ph, moisture_level, temp, rainfall)
+    
+    print("Recommended crops based on your input:")
+    for crop in response["crops"]:
+        print(f" - {crop}")
+
+# Soil Management
+def soil_management(user_id):
+    action = input("1. Log Soil Data\n2. View Soil History\nChoose an option: ")
+    if action == '1':
+        ph = input("Enter soil pH: ")
+        nutrients = input("Enter nutrient levels (N, P, K): ")
+        user_db[user_id]["soil"].append({"pH": ph, "nutrients": nutrients})
+        print("Soil data logged successfully.")
+    elif action == '2':
+        print("Soil History:")
+        for entry in user_db[user_id]["soil"]:
+            print(f" - pH: {entry['pH']}, Nutrients: {entry['nutrients']}")
+
+# Disease Identification
+def disease_identification(user_id):
+    image_path = input("Enter path to crop image: ")
+    
+    response = get_disease_identification(image_path)
+    
+    print(f"Disease Identified: {response['disease']}")
+    print(f"Suggested Treatment: {response['treatment']}")
+
+# Weather and Irrigation Management
+def weather_irrigation(user_id):
+    location = input("Enter your location: ")
+    
+    response = get_weather_forecast(location)
+    
+    print(f"Weather Forecast: {response['forecast']}")
+    print(f"Soil Moisture: {response['moisture']}")
+
+# Smart Resource Management
+def resource_management(user_id):
+    crop_type = input("Enter crop type: ")
+    land_size = input("Enter land size (in acres): ")
+    
+    # Example calculation
+    fertilizer_needed = int(land_size) * 50  # Dummy calculation
+    print(f"Recommended fertilizer amount: {fertilizer_needed} kg")
+
+# Market Access and Financial Support
+def market_access_financial_support(user_id):
+    action = input("1. Market Access\n2. Financial Support\nChoose an option: ")
+    if action == '1':
+        response = get_market_prices()
+        
+        print("Market Prices:")
+        for market, price in response["prices"].items():
+            print(f" - {market}: ${price}")
+    elif action == '2':
+        response = get_financial_support()
+        
+        print("Financial Support Options:")
+        print(response["support"])
+
+# Main function
+def main():
+    print("Welcome to the Crop and Soil Management System")
+    
+    while True:
+        action = input("1. Login\n2. Register\n3. Exit\nChoose an option: ")
+        if action == '1':
+            user_id = login()
+            if user_id:
+                while True:
+                    menu_choice = input("\nMain Menu:\n1. Crop Selection Assistance\n2. Soil Management\n3. Disease Identification\n4. Weather and Irrigation Management\n5. Smart Resource Management\n6. Market Access and Financial Support\n7. Logout\nChoose an option: ")
+                    if menu_choice == '1':
+                        crop_selection(user_id)
+                    elif menu_choice == '2':
+                        soil_management(user_id)
+                    elif menu_choice == '3':
+                        disease_identification(user_id)
+                    elif menu_choice == '4':
+                        weather_irrigation(user_id)
+                    elif menu_choice == '5':
+                        resource_management(user_id)
+                    elif menu_choice == '6':
+                        market_access_financial_support(user_id)
+                    elif menu_choice == '7':
+                        print("Logging out...")
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
+        elif action == '2':
+            user_id = register()
+            if user_id:
+                print("Registration successful! Please log in.")
+        elif action == '3':
+            print("Exiting the system...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
 
